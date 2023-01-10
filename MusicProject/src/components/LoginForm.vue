@@ -77,6 +77,7 @@ export default {
       this.login_alert_msg = "Success! You are logged in!";
 
       console.log(values);
+      window.location.reload();
     },
   },
 };
