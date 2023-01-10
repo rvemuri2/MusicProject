@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import firebase from "@/includes/firebase";
+import { auth } from "@/includes/firebase";
 export default {
   name: "RegisterForm",
   data() {
@@ -139,9 +139,10 @@ export default {
       this.reg_alert_msg = "Please wait! Your account is being created.";
       let userCred = null;
       try {
-        userCred = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(values.email, values.password);
+        userCred = await auth.createUserWithEmailAndPassword(
+          values.email,
+          values.password
+        );
       } catch (error) {
         this.reg_in_submission = false;
         this.reg_alert_msg = "Unexpected error occurred";
