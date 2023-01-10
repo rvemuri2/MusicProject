@@ -27,8 +27,8 @@
     <div class="mb-3">
       <label class="inline-block mb-2">Email</label>
       <vee-field
-        type="email"
         name="email"
+        type="email"
         class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
         placeholder="Enter Email"
       />
@@ -38,8 +38,8 @@
     <div class="mb-3">
       <label class="inline-block mb-2">Age</label>
       <vee-field
-        type="number"
         name="age"
+        type="number"
         class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
       />
       <ErrorMessage class="text-red-600" name="age" />
@@ -50,22 +50,21 @@
       <vee-field name="password" :bails="false" v-slot="{ field, errors }">
         <input
           class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
+          type="password"
           placeholder="Password"
           v-bind="field"
-          type="password"
         />
         <div class="text-red-600" v-for="error in errors" :key="error">
           {{ error }}
         </div>
       </vee-field>
-      <ErrorMessage class="text-red-600" name="password" />
     </div>
     <!-- Confirm Password -->
     <div class="mb-3">
       <label class="inline-block mb-2">Confirm Password</label>
       <vee-field
-        type="password"
         name="confirm_password"
+        type="password"
         class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
         placeholder="Confirm Password"
       />
@@ -89,9 +88,9 @@
     <!-- TOS -->
     <div class="mb-3 pl-6">
       <vee-field
-        type="checkbox"
         name="tos"
         value="1"
+        type="checkbox"
         class="w-4 h-4 float-left -ml-6 mt-1 rounded"
       />
       <label class="inline-block">Accept terms of service</label>
@@ -108,14 +107,16 @@
 </template>
 
 <script>
+import firebase from "@/includes/firebase";
 export default {
-  name: "RegistrationForm",
+  name: "RegisterForm",
   data() {
     return {
+      tab: "login",
       schema: {
         name: "required|min:3|max:100|alpha_spaces",
         email: "required|min:3|max:100|email",
-        age: "required|min_value: 18|max_value: 100",
+        age: "required|min_value:18|max_value:100",
         password: "required|min:9|max:100|excluded:password",
         confirm_password: "passwords_mismatch:@password",
         country: "required|country_excluded:Antarctica",
@@ -127,20 +128,31 @@ export default {
       reg_in_submission: false,
       reg_show_alert: false,
       reg_alert_variant: "bg-blue-500",
-      reg_alert_msg: "Please wait! Your account is being created!",
-
-      methods: {
-        register(values) {
-          this.reg_show_alert = true;
-          this.reg_in_submission = true;
-          this.reg_alert_variant = "bg-blue-500";
-          this.reg_alert_msg = "Please wait! Your account is being created!";
-          this.reg_alert_variant = "bg-green-500";
-          this.reg_alert_msg = "Success! Your account has been created!";
-          console.log(values);
-        },
-      },
+      reg_alert_msg: "Please wait! Your account is being created.",
     };
+  },
+  methods: {
+    async register(values) {
+      this.reg_show_alert = true;
+      this.reg_in_submission = true;
+      this.reg_alert_variant = "bg-blue-500";
+      this.reg_alert_msg = "Please wait! Your account is being created.";
+      let userCred = null;
+      try {
+        userCred = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(values.email, values.password);
+      } catch (error) {
+        this.reg_in_submission = false;
+        this.reg_alert_msg = "Unexpected error occurred";
+        this.reg_alert_variant = "bg-red-500";
+        return;
+      }
+
+      this.reg_alert_variant = "bg-green-500";
+      this.reg_alert_msg = "Success! Your account has been created.";
+      console.log(userCred);
+    },
   },
 };
 </script>
