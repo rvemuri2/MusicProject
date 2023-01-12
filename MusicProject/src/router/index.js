@@ -18,6 +18,14 @@ const routes = [
     path: "/manage-music",
     component: Manage,
   },
+  {
+    path: "/manage",
+    redirect: { name: "Manage" },
+  },
+  {
+    path: "/:catchAll(.*)*",
+    redirect: { name: "Home" },
+  },
 ];
 
 const router = createRouter({
