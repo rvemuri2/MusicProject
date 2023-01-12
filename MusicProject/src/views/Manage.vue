@@ -177,11 +177,17 @@
 </template>
 
 <script>
+import useUserStore from "@/stores/user";
 export default {
   name: "Manage",
   beforeRouteEnter(to, from, next) {
-    console.log("before Route enter guard");
-    next();
+    const store = useUserStore();
+
+    if (store.userLoggedIn) {
+      next();
+    } else {
+      next({ name: "Home" });
+    }
   },
 };
 </script>
