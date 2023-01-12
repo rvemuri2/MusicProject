@@ -3,9 +3,7 @@
   <header id="header" class="bg-gray-700">
     <nav class="container mx-auto flex justify-start items-center py-5 px-4">
       <!-- App Name -->
-      <RouterLink
-        class="text-white font-bold uppercase text-2xl mr-4"
-        to="/about"
+      <RouterLink class="text-white font-bold uppercase text-2xl mr-4" to="/"
         >Music</RouterLink
       >
 
@@ -13,6 +11,9 @@
         <!-- Primary Navigation -->
         <ul class="flex flex-row mt-1">
           <!-- Navigation Links -->
+          <li>
+            <RouterLink class="px-2 text-white" to="/about">About</RouterLink>
+          </li>
           <li v-if="!userStore.userLoggedIn">
             <a class="px-2 text-white" href="#" @click.prevent="toggleAuthModal"
               >Login / Register</a
@@ -20,7 +21,9 @@
           </li>
           <template v-else>
             <li>
-              <a class="px-2 text-white" href="#">Manage</a>
+              <RouterLink class="px-2 text-white" to="/manage"
+                >Manage</RouterLink
+              >
             </li>
             <li>
               <a
