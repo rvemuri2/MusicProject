@@ -59,10 +59,7 @@ export default {
     },
     signOut() {
       this.userStore.signOut();
-      if (
-        this.$route.name === "Manage" ||
-        this.$route.path === "/manage-music"
-      ) {
+      if (this.$route.meta.requiresAuth) {
         router.push("/");
       }
     },
