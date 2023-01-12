@@ -31,10 +31,7 @@
               >
             </li>
             <li>
-              <a
-                class="px-2 text-white"
-                href="#"
-                @click.prevent="userStore.signOut"
+              <a class="px-2 text-white" href="#" @click.prevent="signOut"
                 >Logout</a
               >
             </li>
@@ -49,6 +46,7 @@
 import { mapStores } from "pinia";
 import useModalStore from "@/stores/modal";
 import useUserStore from "@/stores/user";
+import router from "../router";
 export default {
   name: "AppHeader",
   computed: {
@@ -58,6 +56,15 @@ export default {
     toggleAuthModal() {
       this.modalStore.isOpen = !this.modalStore.isOpen;
       console.log(this.modalStore.isOpen);
+    },
+    signOut() {
+      this.userStore.signOut();
+      if (
+        this.$route.name === "Manage" ||
+        this.$route.path === "/manage-music"
+      ) {
+        router.push("/");
+      }
     },
   },
 };
