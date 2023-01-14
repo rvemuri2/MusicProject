@@ -57,14 +57,32 @@ export default {
   components: {
     AppSongItem,
   },
-  async created() {
-    const snapshots = await songsCollection.get();
-    snapshots.forEach((document) => {
-      this.songs.push({
-        docID: document.id,
-        ...document.data(),
+  methods: {
+    async getSongs() {
+      const snapshots = await songsCollection.get();
+      snapshots.forEach((document) => {
+        this.songs.push({
+          docID: document.id,
+          ...document.data(),
+        });
       });
-    });
+    },
+    handleScroll() {
+      const { scrollTop, offsetHeight } = document.documentElement;
+      const { innerHeight } = window;
+      const bottomOfWindow =
+        Math.round(scrollTop) + innerHeight === offsetHeight;
+      if (bottomOfWindow) {
+        console.log("bottom of window");
+      }
+    },
+  },
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+  async created() {
+    this.getSongs();
+    window.addEventListener("scroll", this.handleScroll);
   },
 };
 </script>
