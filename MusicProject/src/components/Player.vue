@@ -5,7 +5,7 @@
     <div class="text-center" v-if="current_song.modified_name">
       <span class="song-title font-bold">{{ current_song.modified_name }}</span>
       by
-      <span class="song-artist">{{ current_song.modified_name }}</span>
+      <span class="song-artist">{{ current_song.display_name }}</span>
     </div>
     <div class="flex flex-nowrap gap-4 items-center">
       <!-- Play/Pause Button -->
@@ -18,7 +18,10 @@
       <!-- Current Position -->
       <div class="player-currenttime">{{ seek }}</div>
       <!-- Scrub Container  -->
-      <div class="w-full h-2 rounded bg-gray-200 relative cursor-pointer">
+      <div
+        @click.prevent="updateSeek"
+        class="w-full h-2 rounded bg-gray-200 relative cursor-pointer"
+      >
         <!-- Player Ball -->
         <span
           class="absolute -top-2.5 -ml-2.5 text-gray-800 text-lg"
@@ -44,7 +47,7 @@ import usePlayerStore from "@/stores/player";
 export default {
   name: "Player",
   methods: {
-    ...mapActions(usePlayerStore, ["toggleAudio"]),
+    ...mapActions(usePlayerStore, ["toggleAudio", "updateSeek"]),
   },
   computed: {
     ...mapState(usePlayerStore, [

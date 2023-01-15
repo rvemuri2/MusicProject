@@ -36,6 +36,17 @@ export default defineStore("player", {
         this.sound.play();
       }
     },
+    updateSeek(event) {
+      if (!this.sound.playing) {
+        return;
+      }
+      const { x, width } = event.currentTarget.getBoundingClientRect();
+      const clickX = event.clientX - x;
+      const percentage = clickX / width;
+      const seconds = this.sound.duration() * percentage;
+      this.sound.seek(seconds);
+      this.sound.once("seek", this.progress);
+    },
     progress() {
       this.seek = helper.formatTime(this.sound.seek());
       this.duration = helper.formatTime(this.sound.duration());
