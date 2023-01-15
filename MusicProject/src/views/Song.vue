@@ -166,6 +166,15 @@ export default {
       });
     },
   },
+  watch: {
+    sort(newVal) {
+      this.$router.push({
+        query: {
+          sort: newVal,
+        },
+      });
+    },
+  },
   components: { ErrorMessage },
 };
 </script>
