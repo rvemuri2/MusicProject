@@ -25,22 +25,24 @@
       <div class="mb-4" v-for="upload in uploads" :key="upload.name">
         <!-- File Name -->
         <div class="font-bold text-sm" :class="upload.text_class">
-          <i :class="upload.icon"></i>{{ upload.name }}
+          <i :class="upload.icon"></i> {{ upload.name }}
         </div>
         <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
           <!-- Inner Progress Bar -->
           <div
-            class="transition-all progress-bar bg-blue-400"
-            :style="{ width: upload.current_progress + '%' }"
             :class="upload.variant"
+            class="transition-all progress-bar"
+            :style="{ width: `${upload.current_progress}%` }"
           ></div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
-import { storage, auth, songsCollection } from "@/includes/firebase.js";
+import { storage, auth, songsCollection } from "@/includes/firebase";
+
 export default {
   name: "Upload",
   data() {
@@ -53,16 +55,20 @@ export default {
   methods: {
     upload($event) {
       this.is_dragover = false;
+
       const files = $event.dataTransfer
         ? [...$event.dataTransfer.files]
         : [...$event.target.files];
+
       files.forEach((file) => {
         if (file.type !== "audio/mpeg") {
           return;
         }
-        const storageRef = storage.ref();
-        const songsRef = storageRef.child(`songs/${file.name}`);
+
+        const storageRef = storage.ref(); // music-c2596.appspot.com
+        const songsRef = storageRef.child(`songs/${file.name}`); // music-c2596.appspot.com/songs/example.mp3
         const task = songsRef.put(file);
+
         const uploadIndex =
           this.uploads.push({
             task,
@@ -72,6 +78,7 @@ export default {
             icon: "fas fa-spinner fa-spin",
             text_class: "",
           }) - 1;
+
         task.on(
           "state_changed",
           (snapshot) => {
@@ -94,20 +101,19 @@ export default {
               genre: "",
               comment_count: 0,
             };
+
             song.url = await task.snapshot.ref.getDownloadURL();
             const songRef = await songsCollection.add(song);
             const songSnapshot = await songRef.get();
 
             this.addSong(songSnapshot);
 
-            await songsCollection.add(song);
             this.uploads[uploadIndex].variant = "bg-green-400";
             this.uploads[uploadIndex].icon = "fas fa-check";
             this.uploads[uploadIndex].text_class = "text-green-400";
           }
         );
       });
-      console.log(files);
     },
     cancelUploads() {
       this.uploads.forEach((upload) => {
@@ -115,10 +121,10 @@ export default {
       });
     },
   },
-  //   beforeUnmount() {
-  //     this.uploads.forEach((upload) => {
-  //       upload.task.cancel();
-  //     });
-  //   },
+  beforeUnmount() {
+    this.uploads.forEach((upload) => {
+      upload.task.cancel();
+    });
+  },
 };
 </script>
