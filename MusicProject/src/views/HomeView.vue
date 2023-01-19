@@ -25,12 +25,12 @@
 
     <!-- Main Content -->
     <section class="container mx-auto">
-      <div 
+      <div
         class="bg-white rounded border border-gray-200 relative flex flex-col"
       >
         <div
           class="px-6 pt-6 pb-5 font-bold border-b border-gray-200"
-          v-icon.right.yellow="'headphones - alt'"
+          v-icon-secondary="{ icon: 'headphones-alt', right: true }"
         >
           <span class="card-title">Songs</span>
           <!-- Icon -->
@@ -53,7 +53,9 @@
 <script>
 import { songsCollection } from "../includes/firebase";
 import AppSongItem from "@/components/SongItem.vue";
+import iconSecondary from "../directives/icon-secondary";
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "Home",
   data() {
     return {
@@ -61,6 +63,9 @@ export default {
       maxPerPage: 20,
       pendingRequest: false,
     };
+  },
+  directives: {
+    "icon-secondary": iconSecondary,
   },
   components: {
     AppSongItem,
